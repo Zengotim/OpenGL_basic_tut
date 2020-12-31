@@ -2,41 +2,102 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "GLHelper.h"
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow* window);
+
+/************* test vertex shader **************/
+const char* vertextShaderSrc = "#version 330 core\n"
+"layout (location = 0) in vec3 aPos;\n"
+"void main(){\n"
+"gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"}\0";
+
+/************** Test triangle ******************/
+float vertices[] = {
+    -0.5f, -0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f,
+    0.0f, 0.5f, 0.0f
+};
+/***********************************************/
 
 
 int main() {
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
+    // create window and context
+    GLFWwindow* window = GLHelper::initGL();
+    if (!window) return -1;
+    // register callback
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+
+    // Render loop
+    while (!glfwWindowShouldClose(window)) {
+
+        /************GOAL STRUCTURE************
+        * 
+        * UpdateIO();
+        * 
+        * Draw();
+        * 
+        * 
+        
+        **************************************/
+
+
+        // input
+        processInput(window);
+
+        // rendering
+        glClearColor(0.3f, 0.0f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+
+
+        unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vertexShader, 1, &vertextShaderSrc, NULL);
+        glCompileShader(vertexShader);
+
+        //Check shader compilation results
+        int success;
+        char infoLog[512] = "";
+        glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+        if (!success) {
+            glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+            std::cout << "ERROR::SHADER::VERTEX::COMPILATION::FAILED\n" << infoLog << std::endl;
+        }
+
+
+
+        // vertex buffer
+        unsigned int VBO;
+        glGenBuffers(1, &VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+
+        //check events and swap buffers
+        glfwPollEvents();
+        glfwSwapBuffers(window);
+        
+    }
+
+    glfwTerminate();
     return 0;
-
-    // Create window
-    GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL_basic_tut", NULL, NULL);
-    if (window == NULL) {
-        std::cout << "Failed to create GLFW window" << std::endl; 
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
-
-
-    // Initialize GLAD
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cout << "Falied to initialize GLAD" << std::endl;
-        return -1;
-    }
-
-    glViewport(0, 0, 800, 600);
     
-    void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-    //void framebuffer_size_callback(GLFWwind)  <--- wait wut????
-
-
 }
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+
+void processInput(GLFWwindow* window) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, true);
+    }
+}
 
 /**** Working basic setup ************************
 #include <glad/glad.h>
