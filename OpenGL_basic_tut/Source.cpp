@@ -132,7 +132,10 @@ int main() {
 
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
-        //fraw function
+        //draw function
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
 
         //check events and swap buffers
