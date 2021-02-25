@@ -36,4 +36,14 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="first.vsh">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="first.fsh">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

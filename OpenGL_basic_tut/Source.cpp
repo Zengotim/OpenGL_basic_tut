@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "GLHelper.h"
+#include "Shader.h"
 
 #include <iostream>
 
@@ -11,26 +12,6 @@ void processInput(GLFWwindow* window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-// vertex shader
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"layout (location = 1) in vec3 aColor;\n"
-"out vec3 ourColor;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"   ourColor = aColor;\n"
-"}\0";
-
-// fragment shader
-const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"in vec3 ourColor;\n"
-"void main()\n"
-"{\n"
-"   //FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"   FragColor = vec4(ourColor, 1.0);\n"
-"}\n\0";
 
 
 
@@ -54,7 +35,7 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // build and compile shader program
-    int shaderProgram = GLHelper::createShaderProgram(vertexShaderSource, fragmentShaderSource);
+    Shader firstShader("./first.vsh", "./first.fsh");
 
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
@@ -102,13 +83,20 @@ int main()
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        glUseProgram(shaderProgram);
+        
 
-        //float timeValue = glfwGetTime();
-        //float greenValue = sin(timeValue) / 2.0f + 0.5f;
-        //int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-        //glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+        float timeValue = glfwGetTime();
+        float redValue = (sin(timeValue) / 2.0f) + 0.5f;
+        float greenValue = cos(timeValue) / 2.0f + 0.5f;
+        float blueValue = cos(timeValue) / 2.0f + 0.5f;
 
+        firstShader.use();
+
+        int vertexColorLocation = glGetUniformLocation(firstShader.ID, "colorMod");
+        std::cout << "Color is " << redValue << ", " << greenValue << ", " << blueValue << std::endl;
+
+        glUniform4f(vertexColorLocation, redValue, greenValue, blueValue, 1.0f);
+        //firstShader.setFloat("vertexColorLocation", redValue);
 
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         //glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -126,7 +114,7 @@ int main()
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    glDeleteProgram(shaderProgram);
+
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
