@@ -145,10 +145,11 @@
     <ClCompile Include="D:\Media\Software\GLFW\glad\src\glad.c" />
     <ClCompile Include="GLHelper.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="threedsys_main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLHelper.h" />
+    <ClInclude Include="image_loader.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +161,9 @@
     <None Include="first.fsh">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="D:\Media\Pics\Assets\container.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
